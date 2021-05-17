@@ -1,6 +1,7 @@
 
 ## Introduction
-The neural network and all functions that relate to it's functioning are inside the neural_net class. One instance of the network represents one network. This allows you to easily create an ensemble with a vectorized approach.
+This project is an attempt to implement an efficient and still easy to understand neural network using MATLAB as a base language with no necessary addons. It will later be ported to C++.
+Any feedback is very welcome as the team consists of only one person.
 
 ## Configuration
 The class constructor takes a single configuration structure that contains multiple settings.
@@ -28,6 +29,7 @@ There are two ways of using this:
 	- This applies ReLU to all hidden layers and Softmax to the output layer
 
 ## Variables and structures
+The neural network and all functions that relate to it's functioning are inside the neural_net class. One instance of the network represents one network only. This allows you to easily create an ensemble with a vectorized approach.
 
 **Layer**: structure that represents the weights and biases of the network
 
