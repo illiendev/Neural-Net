@@ -67,6 +67,7 @@ There are two ways of using this:
 	bias_fix 		- cached version for the bias fix in adam's optimizer
 	funcIndex		- Maps activation functions to its desired configuration
 	train			- Global boolean that shows whether the network is currently training or validating
+
 ## Functions
 - **feed_forward**: Calculates the forward pass of the network
 	- Receives a set of samples
