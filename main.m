@@ -2,13 +2,13 @@ clc;
 clear all; close all;
 
 %% Hyperparameters
-config.numEpochs = 1000;
+config.numEpochs = 100;
 config.maxTime = 500;
 config.logInterval = 10;
 
 config.optimizer = 0;           % 0-SGD, 1-SGDMOM, 2-ADAM
 config.beta = [0.9 0.999];      % beta1 and beta2 respectively
-config.structure = [100];
+config.structure = [64];
 config.activation = [1 4];
 [net, perf] = train_network(config, 'data\mnist_uint8.mat');
 
@@ -20,7 +20,7 @@ performance = []; time = 0;
 
 for epoch=1:config.numEpochs
     tic;
-    if (epoch == 1), batch_size = 100; rate = 4 * 1E-3; end
+    if (epoch == 1), batch_size = 50; rate = 1 * 1E-3; end
 %     if (epoch == 100), batch_size = 100; rate = 1 * 1E-3; end
 %     if (epoch == 200), batch_size = 50; rate = 1 * 1E-3; end
 %     if (epoch == 300), batch_size = 50; rate = 1 * 1E-3; end
