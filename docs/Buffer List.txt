@@ -1,0 +1,9 @@
+Hamming book
+Local cost points
+War Score, Battle Score
+
+
+Separate PID : 
+
+Function that inputs (std, var, mean, min, max, error) and normalizes it
+MAP FUNCTION? -1 to 1?

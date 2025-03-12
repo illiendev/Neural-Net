@@ -1,51 +1,37 @@
-clc;
+clc; addpath (pwd + "\data");
 clear all; close all;
 
-%% Hyperparameters
-config.numEpochs = 100;
-config.maxTime = 500;
+%% Hyperparameters (Split Network variables vs Data variables)
+% Optimizer: 0- SGD, 1- SGDMOM, 2- ADAM
+% Beta: Beta 1 and Beta 2 respectively
+% Activation: 0- Linear, 1- ReLU, 2- Sigmoid, 3-Swish, 4-Softmax
+
+[tdata, tlabel, vdata, vlabel] = mnist.load_data();
+config.numEpochs = 500;
+config.maxTime = 3600;
 config.logInterval = 10;
 
-config.optimizer = 0;           % 0-SGD, 1-SGDMOM, 2-ADAM
-config.beta = [0.9 0.999];      % beta1 and beta2 respectively
-config.structure = [64];
+config.optimizer = 2;
+config.beta = [0.9 0.999];
+config.structure = [100 100];
+config.convStructure = {ones(3,3,9)};
+config.convStride = {[1 1]};
 config.activation = [1 4];
-[net, perf] = train_network(config, 'data\mnist_uint8.mat');
 
-function [net, performance] = train_network(config, location)
-[tdata, tlabel, vdata, vlabel] = data_processing(location);
-config.structure = [size(tdata, 1) config.structure size(tlabel, 1)];
-net = neural_net(config);
-performance = []; time = 0;
+config.varType = single(1);
+config.dataSize = size(tdata, 1);
+config.labelSize = size(tlabel, 1);
 
-for epoch=1:config.numEpochs
-    tic;
-    if (epoch == 1), batch_size = 50; rate = 1 * 1E-3; end
-%     if (epoch == 100), batch_size = 100; rate = 1 * 1E-3; end
-%     if (epoch == 200), batch_size = 50; rate = 1 * 1E-3; end
-%     if (epoch == 300), batch_size = 50; rate = 1 * 1E-3; end
+N = 1;
+results = train_batch(N, config, tdata, tlabel, vdata, vlabel);
 
-    net = net.backprop(tdata, tlabel, rate, batch_size, epoch);
-    time = time + toc;
-    
-    if mod(epoch, config.logInterval) == 0
-        performance(end+1, :) = [net.validate(vdata, vlabel), net.validate(tdata, tlabel), time];
-        fprintf ('Epoch(%d): %fs', epoch, time);
-        fprintf ('\nError(Training): %f', performance(end, 2));
-        fprintf ('\nAccuracy: %f\n---------------\n', performance(end, 1));
-        if performance(end, 2) >= 1, break; end
-    end
-
-    if time > config.maxTime, break; end
+function results = train_batch(N, config, tdata, tlabel, vdata, vlabel)
+results = [];
+net(1:N) = neural_net(config);
+for i=1:N
+    net(i) = neural_net(config);
+    performance = net(i).train_network(config, tdata, tlabel, vdata, vlabel);
+    results = [results; max(performance) .* [100 100 1]];
 end
-end
-
-function [tdata, tlabel, vdata, vlabel] = data_processing(location)
-load(location, 'tdata', 'tlabel', 'vdata', 'vlabel');
-tdata = single(tdata)/255;
-tlabel = single(tlabel);
-vdata = single(vdata)/255;
-vlabel = single(vlabel);
-tdata = (tdata - mean(tdata(:)) ./ (std(tdata(:))));
-vdata = (vdata - mean(vdata(:)) ./ (std(vdata(:))));
+% results = performance;
 end
